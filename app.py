@@ -1,15 +1,16 @@
-from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from fastapi.requests import Request
+from datetime import datetime
 
-templates = Jinja2Templates(directory='templates')
-static = StaticFiles(directory='static')
-
-app = FastAPI()
-app.mount('/static', static, 'static')
+from jinja2 import Environment, PackageLoader, Template
+from pydantic import BaseModel
 
 
-@app.get('/')
-async def index(request: Request):
-    return templates.TemplateResponse('index.html', {'request': request})
+class Category(BaseModel):
+    name: str
+    is_published: bool
+
+
+objs = [Category(name=f'Category {i}', is_published=True if i % 2 else False) for i in range(10)]
+loader = PackageLoader('app')
+env = Environment(loader=loader)
+template = env.get_template('index.html')
+print(template.render())
