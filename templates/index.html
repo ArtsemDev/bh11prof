@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+MAIN PAGE
+{% endblock %}
+
+{% block content %}
+        <!-- Navigation-->
+        {% include "components/nav.html" %}
+        <!-- Masthead-->
+        {% include "components/header.html" %}
+        <!-- Portfolio Section-->
+        {% include "components/portfolio.html" %}
+        <!-- About Section-->
+        {% include "components/about.html" %}
+        <!-- Contact Section-->
+        {% include "components/contact.html" %}
+        <!-- Footer-->
+        {% include "components/footer.html" %}
+        <!-- Portfolio Modals-->
+        {% for _ in range(6) %}
+            {% include "components/portfolio-modal.html" %}
+        {% endfor %}
+{% endblock %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, validator, root_validator, EmailStr, BaseConfig
 from pydantic.types import Decimal
 import ujson
@@ -5,10 +7,19 @@ import ujson
 categories = ['Coffee', 'Tea']
 
 
+def to_snakecase(value):
+    return ''.join([word.title() if i > 0 else word for i, word in enumerate(value.split('_'))])
+
+
 class Base(BaseModel):
     class Config(BaseConfig):
         json_dumps = ujson.dumps
         json_loads = ujson.loads
+        alias_generator = to_snakecase
+        json_encoders = {
+            datetime: lambda x: x.timestamp(),
+            'Category': lambda x: f'{x.name}'
+        }
 
 
 class User(Base):
@@ -44,3 +55,17 @@ class Category(Base):
 
         categories.append(value.title())
         return value.title()
+
+
+class Response(Base):
+    date_publish: datetime
+    category: Category
+
+    class Config:
+        json_dumps = ujson.dumps
+        json_loads = ujson.loads
+        alias_generator = to_snakecase
+        json_encoders = {
+            datetime: lambda x: x.timestamp(),
+            Category: lambda x: x.name
+        }
